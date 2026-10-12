@@ -1,1 +1,12 @@
 @import "tailwindcss";
+:root {
+  /* ME Technologies brand colours — provisional */
+  --color-primary: #008F43;
+  --color-secondary: #FFD12F;
+  --color-dark: #101510;
+  --color-light: #F7F8F5;
+  --color-text: #242824;
+
+  --font-heading: "Montserrat", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
