@@ -10,6 +10,7 @@ const courseRoutes = require('./routes/courseRoutes');
 const batchRoutes = require('./routes/batchRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const postRoutes = require('./routes/postRoutes');
+const authRoutes = require('./routes/authRoutes');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -45,6 +46,7 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/batches', batchRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/posts', postRoutes);
+app.use('/api/auth', authRoutes);
 
 // Keep these after the valid routes.
 app.use(notFound);
