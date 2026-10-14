@@ -6,6 +6,8 @@ const path = require('path');
 
 const healthRoutes = require('./routes/healthRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
+const courseRoutes = require('./routes/courseRoutes');
+const batchRoutes = require('./routes/batchRoutes');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -37,6 +39,8 @@ app.get('/', (req, res) => {
 
 app.use('/api/health', healthRoutes);
 app.use('/api/services', serviceRoutes);
+app.use('/api/courses', courseRoutes);
+app.use('/api/batches', batchRoutes);
 
 // Keep these after the valid routes.
 app.use(notFound);
