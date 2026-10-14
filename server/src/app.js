@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const path = require('path');
 
 const healthRoutes = require('./routes/healthRoutes');
+const serviceRoutes = require('./routes/serviceRoutes');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -35,6 +36,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/health', healthRoutes);
+app.use('/api/services', serviceRoutes);
 
 // Keep these after the valid routes.
 app.use(notFound);
