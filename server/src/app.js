@@ -8,6 +8,8 @@ const healthRoutes = require('./routes/healthRoutes');
 const serviceRoutes = require('./routes/serviceRoutes');
 const courseRoutes = require('./routes/courseRoutes');
 const batchRoutes = require('./routes/batchRoutes');
+const projectRoutes = require('./routes/projectRoutes');
+const postRoutes = require('./routes/postRoutes');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -41,6 +43,8 @@ app.use('/api/health', healthRoutes);
 app.use('/api/services', serviceRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/batches', batchRoutes);
+app.use('/api/projects', projectRoutes);
+app.use('/api/posts', postRoutes);
 
 // Keep these after the valid routes.
 app.use(notFound);
