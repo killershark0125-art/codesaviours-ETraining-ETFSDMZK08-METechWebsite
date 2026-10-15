@@ -13,6 +13,7 @@ const postRoutes = require('./routes/postRoutes');
 const authRoutes = require('./routes/authRoutes');
 const leadRoutes = require('./routes/leadRoutes');
 const enrollmentRoutes = require('./routes/enrollmentRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
 
@@ -51,6 +52,7 @@ app.use('/api/posts', postRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/leads', leadRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Keep these after the valid routes.
 app.use(notFound);
