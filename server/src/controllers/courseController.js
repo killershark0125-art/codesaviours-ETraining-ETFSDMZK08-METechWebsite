@@ -1,5 +1,8 @@
 const Course = require('../models/Course');
 const Batch = require('../models/Batch');
+const Enrollment = require('../models/Enrollment');
+const httpError = require('../utils/httpError');
+const { buildCrudHandlers } = require('../utils/crudHandlers');
 
 // GET /api/courses
 const getCourses = async (req, res) => {
@@ -30,4 +33,22 @@ const getCourseBySlug = async (req, res) => {
   });
 };
 
-module.exports = { getCourses, getCourseBySlug };
+const crud = buildCrudHandlers(Course, {
+  label: 'Course',
+  allowedFields: ['title', 'slug', 'tools', 'duration', 'fee', 'outline', 'image'],
+  beforeDelete: async (course) => {
+    const hasBatches = await Batch.exists({ course: course._id });
+    const hasEnrollments = await Enrollment.exists({ course: course._id });
+    if (hasBatches || hasEnrollments) {
+      throw httpError(409, 'This course has batches or enrollments. Remove them first.');
+    }
+  },
+});
+
+module.exports = {
+  getCourses,
+  getCourseBySlug,
+  createCourse: crud.create,
+  updateCourse: crud.update,
+  deleteCourse: crud.remove,
+};
