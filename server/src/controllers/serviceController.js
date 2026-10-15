@@ -1,4 +1,5 @@
 const Service = require('../models/service');
+const { buildCrudHandlers } = require('../utils/crudHandlers');
 
 // GET /api/services
 const getServices = async (req, res) => {
@@ -28,4 +29,15 @@ const getServiceBySlug = async (req, res) => {
   });
 };
 
-module.exports = { getServices, getServiceBySlug };
+const crud = buildCrudHandlers(Service, {
+  label: 'Service',
+  allowedFields: ['title', 'slug', 'icon', 'shortText', 'description', 'order'],
+});
+
+module.exports = {
+  getServices,
+  getServiceBySlug,
+  createService: crud.create,
+  updateService: crud.update,
+  deleteService: crud.remove,
+};
