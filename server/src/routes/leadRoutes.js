@@ -4,6 +4,7 @@ const {
   getLeads,
   getLeadById,
   updateLeadStatus,
+  deleteLead,
 } = require('../controllers/leadController');
 const { adminAuth } = require('../middleware/authMiddleware');
 const validate = require('../middleware/validate');
@@ -16,5 +17,6 @@ router.post('/', createLeadValidator, validate, createLead); // public
 router.get('/', adminAuth, getLeads);
 router.get('/:id', adminAuth, getLeadById);
 router.patch('/:id/status', adminAuth, leadStatusValidator, validate, updateLeadStatus);
+router.delete('/:id', adminAuth, deleteLead);
 
 module.exports = router;

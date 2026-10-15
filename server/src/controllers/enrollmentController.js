@@ -155,4 +155,21 @@ const updateEnrollmentStatus = async (req, res) => {
   });
 };
 
-module.exports = {   createEnrollment, getEnrollments, getEnrollmentById, updateEnrollmentStatus,};
+// DELETE /api/enrollments/:id  (admin) - releases the seat if it was held
+const deleteEnrollment = async (req, res) => {
+  const enrollment = await Enrollment.findById(req.params.id);
+  if (!enrollment) throw httpError(404, 'Enrollment not found.');
+
+  if (enrollment.batch && enrollment.status !== 'cancelled') {
+    await Batch.updateOne(
+      { _id: enrollment.batch, seatsTaken: { $gt: 0 } },
+      { $inc: { seatsTaken: -1 } }
+    );
+  }
+
+  await enrollment.deleteOne();
+
+  res.status(200).json({ success: true, message: 'Enrollment deleted.' });
+};
+
+module.exports = {   createEnrollment, getEnrollments, getEnrollmentById, updateEnrollmentStatus, deleteEnrollment};

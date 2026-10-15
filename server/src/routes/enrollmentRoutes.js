@@ -4,6 +4,7 @@ const {
   getEnrollments,
   getEnrollmentById,
   updateEnrollmentStatus,
+  deleteEnrollment,
 } = require('../controllers/enrollmentController');
 const { adminAuth } = require('../middleware/authMiddleware');
 const validate = require('../middleware/validate');
@@ -16,5 +17,6 @@ router.post('/', createEnrollmentValidator, validate, createEnrollment); // publ
 router.get('/', adminAuth, getEnrollments);
 router.get('/:id', adminAuth, getEnrollmentById);
 router.patch('/:id/status', adminAuth, enrollmentStatusValidator, validate, updateEnrollmentStatus);
+router.delete('/:id', adminAuth, deleteEnrollment);
 
 module.exports = router;

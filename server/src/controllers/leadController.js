@@ -66,4 +66,12 @@ const updateLeadStatus = async (req, res) => {
   res.status(200).json({ success: true, message: 'Lead status updated.', data: lead });
 };
 
-module.exports = { createLead, getLeads, getLeadById, updateLeadStatus };
+// DELETE /api/leads/:id  (admin)
+const deleteLead = async (req, res) => {
+  const lead = await Lead.findByIdAndDelete(req.params.id);
+  if (!lead) throw httpError(404, 'Lead not found.');
+
+  res.status(200).json({ success: true, message: 'Lead deleted.' });
+};
+
+module.exports = { createLead, getLeads, getLeadById, updateLeadStatus, deleteLead};
