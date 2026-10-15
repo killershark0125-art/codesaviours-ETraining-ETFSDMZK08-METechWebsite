@@ -1,6 +1,7 @@
 const Project = require('../models/Project');
 const { getPagination, buildPagination } = require('../utils/pagination');
 const escapeRegex = require('../utils/escapeRegex');
+const { buildCrudHandlers } = require('../utils/crudHandlers');
 
 // GET /api/projects?sector=&systemType=&page=&limit=
 const getProjects = async (req, res) => {
@@ -43,4 +44,18 @@ const getProjectBySlug = async (req, res) => {
   res.status(200).json({ success: true, data: project });
 };
 
-module.exports = { getProjects, getProjectBySlug };
+const crud = buildCrudHandlers(Project, {
+  label: 'Project',
+  allowedFields: [
+    'title', 'slug', 'capacity', 'sector', 'systemType',
+    'city', 'images', 'description', 'isSample',
+  ],
+});
+
+module.exports = {
+  getProjects,
+  getProjectBySlug,
+  createProject: crud.create,
+  updateProject: crud.update,
+  deleteProject: crud.remove,
+};
