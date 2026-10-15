@@ -34,4 +34,7 @@ const adminOnly = (req, res, next) => {
   next();
 };
 
-module.exports = { protect, adminOnly };
+// Use on any admin route: login required AND admin role.
+const adminAuth = [protect, adminOnly];
+
+module.exports = { protect, adminOnly, adminAuth };
