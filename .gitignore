@@ -21,3 +21,7 @@ Thumbs.db
 
 # Local editor settings
 .vscode/
+
+# Uploaded files (keep the empty folder in git)
+server/uploads/*
+!server/uploads/.gitkeep
