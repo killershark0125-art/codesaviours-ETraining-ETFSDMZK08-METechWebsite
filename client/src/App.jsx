@@ -1,93 +1,163 @@
-
 import { useEffect } from "react";
-import Navbar from "./components/Navbar";
-import Hero from "./components/Hero";
-import Services from "./components/Services";
-import Footer from "./components/Footer";
+import { AuthProvider } from "./context/AuthContext";
+import { RouterProvider, useRouter } from "./router";
+import SiteLayout from "./components/SiteLayout";
+import {
+  AboutPage,
+  BlogDetailPage,
+  BlogPage,
+  CourseDetailPage,
+  EVChargingPage,
+  HomePage,
+  LeadFormPage,
+  NotFoundPage,
+  ProjectDetailPage,
+  ProjectsPage,
+  ServiceDetailPage,
+  ServicesPage,
+  TrainingPage,
+} from "./pages/PublicPages";
+import {
+  AdminContentPage,
+  AdminDashboardPage,
+  AdminInboxPage,
+  AdminLoginPage,
+  ProtectedAdmin,
+} from "./pages/AdminPages";
 
-function App() {
+function AppRoutes() {
+  const { path } = useRouter();
+  const pathname = path.split("?")[0].replace(/\/$/, "") || "/";
   useEffect(() => {
-    const elements = document.querySelectorAll("[data-reveal]");
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      elements.forEach((element) => element.classList.add("is-visible"));
-      return;
+    const titles = {
+      "/": "Engineering for a Better Tomorrow",
+      "/about": "About",
+      "/services": "Services",
+      "/ev-charging": "EV Charging",
+      "/training": "Training",
+      "/projects": "Projects & Case Studies",
+      "/blog": "Journal",
+      "/contact": "Contact",
+      "/quote": "Get a Quote",
+      "/admin/login": "Admin Login",
+    };
+    const section = pathname.split("/").filter(Boolean)[0];
+    const title =
+      titles[pathname] ||
+      (section === "training"
+        ? "Training Program"
+        : section === "projects"
+          ? "Project Details"
+          : section === "blog"
+            ? "Journal Article"
+            : section === "services"
+              ? "Service Details"
+              : "Page");
+    document.title = `${title} | ME Technologies`;
+    let description = document.querySelector('meta[name="description"]');
+    if (!description) {
+      description = document.createElement("meta");
+      description.name = "description";
+      document.head.appendChild(description);
     }
+    description.content =
+      "ME Technologies provides engineering consultancy, renewable energy, EV charging, building design, and technical training in Pakistan.";
+  }, [pathname]);
+  let page;
+  let isAdmin =
+    pathname === "/admin/login" ||
+    pathname.startsWith("/admin/") ||
+    pathname === "/admin";
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      {
-        threshold: 0.12,
-        rootMargin: "0px 0px -35px 0px",
-      }
+  if (pathname === "/admin/login") page = <AdminLoginPage />;
+  else if (pathname === "/admin")
+    page = (
+      <ProtectedAdmin>
+        <AdminDashboardPage />
+      </ProtectedAdmin>
     );
+  else if (pathname === "/admin/leads")
+    page = (
+      <ProtectedAdmin>
+        <AdminInboxPage kind="leads" />
+      </ProtectedAdmin>
+    );
+  else if (pathname === "/admin/enrollments")
+    page = (
+      <ProtectedAdmin>
+        <AdminInboxPage kind="enrollments" />
+      </ProtectedAdmin>
+    );
+  else if (pathname === "/admin/services")
+    page = (
+      <ProtectedAdmin>
+        <AdminContentPage kind="services" />
+      </ProtectedAdmin>
+    );
+  else if (pathname === "/admin/courses")
+    page = (
+      <ProtectedAdmin>
+        <AdminContentPage kind="courses" />
+      </ProtectedAdmin>
+    );
+  else if (pathname === "/admin/batches")
+    page = (
+      <ProtectedAdmin>
+        <AdminContentPage kind="batches" />
+      </ProtectedAdmin>
+    );
+  else if (pathname === "/admin/projects")
+    page = (
+      <ProtectedAdmin>
+        <AdminContentPage kind="projects" />
+      </ProtectedAdmin>
+    );
+  else if (pathname === "/admin/posts")
+    page = (
+      <ProtectedAdmin>
+        <AdminContentPage kind="posts" />
+      </ProtectedAdmin>
+    );
+  else if (pathname === "/") page = <HomePage />;
+  else if (pathname === "/about") page = <AboutPage />;
+  else if (pathname === "/services") page = <ServicesPage />;
+  else if (pathname.startsWith("/services/"))
+    page = <ServiceDetailPage slug={pathname.slice("/services/".length)} />;
+  else if (pathname === "/ev-charging") page = <EVChargingPage />;
+  else if (pathname === "/training") page = <TrainingPage />;
+  else if (pathname.startsWith("/training/"))
+    page = <CourseDetailPage slug={pathname.slice("/training/".length)} />;
+  else if (pathname === "/projects") page = <ProjectsPage />;
+  else if (pathname.startsWith("/projects/"))
+    page = <ProjectDetailPage slug={pathname.slice("/projects/".length)} />;
+  else if (pathname === "/blog") page = <BlogPage />;
+  else if (pathname.startsWith("/blog/"))
+    page = <BlogDetailPage slug={pathname.slice("/blog/".length)} />;
+  else if (pathname === "/contact") page = <LeadFormPage source="contact" />;
+  else if (pathname === "/quote") page = <LeadFormPage source="quote" />;
+  else page = <NotFoundPage />;
 
-    elements.forEach((element) => observer.observe(element));
-
-    return () => observer.disconnect();
-  }, []);
-
+  if (isAdmin)
+    return (
+      <div key={pathname} className="route-enter">
+        {page}
+      </div>
+    );
   return (
-    <>
-      <Navbar />
-
-      <main>
-        <Hero />
-
-        <section className="approach section-shell" id="approach">
-          <div className="approach-label" data-reveal>
-            <p className="eyebrow">
-              <span className="section-number">01</span>
-              THE ME APPROACH
-            </p>
-
-            <span className="approach-symbol" aria-hidden="true">
-              M<span>E</span>
-            </span>
-          </div>
-
-          <div className="approach-copy" data-reveal>
-            <h2>
-              The future doesn't
-              <br />
-              <span>build itself.</span>
-            </h2>
-
-            <p className="approach-lead">
-              It takes thoughtful design, sound engineering, and a willingness
-              to solve the right problems.
-            </p>
-
-            <p className="approach-detail">
-              ME Technologies brings engineering, energy, design, and
-              technical learning together under one vision: Smart Engineering
-              Today. Sustainable Tomorrow.
-            </p>
-
-            <a className="underlined-link" href="#services">
-              See what we do <span aria-hidden="true">↘</span>
-            </a>
-          </div>
-
-          <div className="approach-foot" aria-hidden="true">
-            <span>THINK CLEARLY.</span>
-            <span>DESIGN INTENTIONALLY.</span>
-            <span>BUILD FOR TOMORROW.</span>
-          </div>
-        </section>
-
-        <Services />
-        <Footer />
-      </main>
-    </>
+    <SiteLayout>
+      <div key={pathname} className="route-enter">
+        {page}
+      </div>
+    </SiteLayout>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <RouterProvider>
+      <AuthProvider>
+        <AppRoutes />
+      </AuthProvider>
+    </RouterProvider>
+  );
+}
