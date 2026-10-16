@@ -175,3 +175,27 @@ Environment variables (`server/.env`): `NODE_ENV`, `PORT`, `CLIENT_URL`, `MONGOD
 ## 7. Testing
 
 Import `docs/postman/ME-Technologies-API.postman_collection.json` into Postman, create an environment with `baseUrl` (`http://localhost:5000/api`), `adminEmail`, `adminPassword` and `token`, and run "Login (saves token)" first. Folders 01-07 can be run in order with the Collection Runner; each request asserts its expected status code. Folder 08 (uploads) needs an image chosen manually.
+
+## Projects, case studies and map (Module 3)
+
+These endpoints replace the earlier project rows.
+
+| Method | Path | Access | Notes |
+| --- | --- | --- | --- |
+| GET | `/api/projects` | Public | Published only, paginated, newest first. Filters `sector`, `systemType`. Does not include `problem`, `solution`, `result` |
+| GET | `/api/projects/map` | Public | Published projects that have coordinates, not paginated (max 500). Optional filter `sector`. Returns `_id`, `title`, `slug`, `city`, `province`, `sector`, `systemType`, `capacity`, `coverImage`, `latitude`, `longitude` |
+| GET | `/api/projects/:slug` | Public | Published only, includes the full case study |
+| GET | `/api/projects/admin/all` | Admin | Includes drafts. Filters `sector`, `isPublished`, `search`, `page`, `limit` |
+| POST / PUT `/:id` / DELETE `/:id` | `/api/projects` | Admin | PUT updates only the fields sent; `null` clears `latitude`, `longitude`, `capacityValue`, `capacityUnit` |
+
+**Project fields:** `title`, `slug`, `coverImage`, `images[]`, `capacity` (display text built by the server), `capacityValue`, `capacityUnit` (`kW`, `MW`, `kWh`, `MWh`), `sector` (`residential`, `commercial`, `industrial`, `agriculture`, `ev`), `systemType`, `city`, `province`, `latitude`, `longitude`, `description`, `problem`, `solution`, `result`, `isSample` (default `true`), `isPublished` (default `true`).
+
+**Rules:**
+- An unknown `sector` filter returns 400.
+- `latitude` and `longitude` are sent together and must lie inside Pakistan (latitude 23.5 to 37.2, longitude 60.8 to 77.9).
+- `capacityValue` and `capacityUnit` are sent together.
+- `systemType` must be one of the values in `server/src/config/projectOptions.js`.
+- `coverImage` and gallery entries must be an `/uploads/...` path or an http(s) URL.
+- The slugs `map` and `admin` are reserved.
+- Projects created before publication status existed count as published.
+- Several projects can share a city, and the map endpoint returns all of them.
