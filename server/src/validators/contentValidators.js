@@ -1,5 +1,13 @@
 const { body } = require('express-validator');
 
+const { sectors, systemTypes, capacityUnits, pakistanBounds } = require('../config/projectOptions');
+
+// An uploaded image path or a normal http(s) URL. Blocks things like javascript: links.
+const isImageRef = (value) =>
+  value === '' ||
+  /^\/uploads\/[A-Za-z0-9._-]+$/.test(value) ||
+  /^https?:\/\/\S+$/i.test(value);
+
 // On update every field is optional; on create the required ones must be present.
 const field = (name, isUpdate) => (isUpdate ? body(name).optional() : body(name));
 
@@ -67,15 +75,47 @@ const batchRules = (isUpdate) => [
 const projectRules = (isUpdate) => [
   text('title', 'Title', 150, isUpdate),
   slug(isUpdate),
-  optionalText('capacity', 'Capacity', 100),
-  field('sector', isUpdate)
-    .isIn(['residential', 'commercial', 'industrial'])
-    .withMessage('Sector must be residential, commercial or industrial'),
-  optionalText('systemType', 'System type', 100),
-  optionalText('city', 'City', 100),
+  body('coverImage')
+    .optional()
+    .isString().withMessage('Cover image must be text').bail()
+    .trim()
+    .custom(isImageRef)
+    .withMessage('Cover image must be an uploaded image (/uploads/...) or an http(s) URL'),
   ...stringArray('images', 'Images', 20),
+  body('images.*')
+    .custom(isImageRef)
+    .withMessage('Each gallery image must be an uploaded image (/uploads/...) or an http(s) URL'),
+  optionalText('capacity', 'Capacity', 100),
+  body('capacityValue')
+    .optional({ values: 'null' })
+    .isFloat({ gt: 0 }).withMessage('Capacity value must be a number greater than 0')
+    .toFloat(),
+  body('capacityUnit')
+    .optional({ values: 'null' })
+    .isIn(capacityUnits).withMessage(`Capacity unit must be one of: ${capacityUnits.join(', ')}`),
+  field('sector', isUpdate)
+    .isIn(sectors).withMessage(`Sector must be one of: ${sectors.join(', ')}`),
+  body('systemType')
+    .optional({ values: 'falsy' })
+    .isIn(systemTypes).withMessage(`System type must be one of: ${systemTypes.join(', ')}`),
+  optionalText('city', 'City', 100),
+  optionalText('province', 'Province', 60),
+  body('latitude')
+    .optional({ values: 'null' })
+    .isFloat({ min: pakistanBounds.minLat, max: pakistanBounds.maxLat })
+    .withMessage(`Latitude must be a number between ${pakistanBounds.minLat} and ${pakistanBounds.maxLat}`)
+    .toFloat(),
+  body('longitude')
+    .optional({ values: 'null' })
+    .isFloat({ min: pakistanBounds.minLng, max: pakistanBounds.maxLng })
+    .withMessage(`Longitude must be a number between ${pakistanBounds.minLng} and ${pakistanBounds.maxLng}`)
+    .toFloat(),
   optionalText('description', 'Description', 5000),
+  optionalText('problem', 'Problem', 5000),
+  optionalText('solution', 'Solution', 5000),
+  optionalText('result', 'Result', 5000),
   body('isSample').optional().isBoolean().withMessage('isSample must be true or false').toBoolean(),
+  body('isPublished').optional().isBoolean().withMessage('isPublished must be true or false').toBoolean(),
 ];
 
 const postRules = (isUpdate) => [
