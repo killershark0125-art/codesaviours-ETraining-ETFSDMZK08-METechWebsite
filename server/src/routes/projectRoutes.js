@@ -1,7 +1,9 @@
 const express = require('express');
 const {
   getProjects,
+  getProjectMapData,
   getProjectBySlug,
+  getAllProjectsAdmin,
   createProject,
   updateProject,
   deleteProject,
@@ -16,6 +18,9 @@ const {
 const router = express.Router();
 
 router.get('/', getProjects);
+// Fixed paths MUST come before '/:slug', or Express would treat them as slugs.
+router.get('/map', getProjectMapData);
+router.get('/admin/all', adminAuth, getAllProjectsAdmin);
 router.get('/:slug', getProjectBySlug);
 
 router.post('/', adminAuth, createProjectValidator, validate, createProject);
