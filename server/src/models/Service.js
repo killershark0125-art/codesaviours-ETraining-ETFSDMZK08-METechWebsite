@@ -24,6 +24,7 @@ const serviceSchema = new mongoose.Schema(
       maxlength: 250,
     },
     description: { type: String, trim: true, default: '' },
+        included: { type: [String], default: [] },
     order: { type: Number, default: 0 },
   },
   { timestamps: true }

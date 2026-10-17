@@ -48,6 +48,7 @@ const serviceRules = (isUpdate) => [
   optionalText('icon', 'Icon', 50),
   text('shortText', 'Short text', 250, isUpdate),
   optionalText('description', 'Description', 5000),
+    ...stringArray('included', 'Included items', 20),
   body('order').optional().isInt({ min: 0 }).withMessage('Order must be a whole number, 0 or more').toInt(),
 ];
 

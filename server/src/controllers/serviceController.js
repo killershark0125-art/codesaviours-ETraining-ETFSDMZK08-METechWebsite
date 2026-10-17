@@ -1,5 +1,9 @@
-const Service = require('../models/service');
+const Service = require('../models/Service');
 const { buildCrudHandlers } = require('../utils/crudHandlers');
+
+// Services stored before the "included" field existed have no such property,
+// and .lean() skips schema defaults, so make sure the API always returns an array.
+const withDefaults = (service) => ({ ...service, included: service.included || [] });
 
 // GET /api/services
 const getServices = async (req, res) => {
@@ -7,7 +11,7 @@ const getServices = async (req, res) => {
 
   res.status(200).json({
     success: true,
-    data: services,
+    data: services.map(withDefaults),
   });
 };
 
@@ -25,13 +29,13 @@ const getServiceBySlug = async (req, res) => {
 
   res.status(200).json({
     success: true,
-    data: service,
+    data: withDefaults(service),
   });
 };
 
 const crud = buildCrudHandlers(Service, {
   label: 'Service',
-  allowedFields: ['title', 'slug', 'icon', 'shortText', 'description', 'order'],
+  allowedFields: ['title', 'slug', 'icon', 'shortText', 'description', 'included', 'order'],
 });
 
 module.exports = {
