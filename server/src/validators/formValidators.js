@@ -61,4 +61,6 @@ const createEnrollmentValidator = [
     .isMongoId().withMessage('Batch must be a valid id'),
 ];
 
-module.exports = { createLeadValidator, createEnrollmentValidator };
+const subscribeValidator = [emailField()];
+
+module.exports = { createLeadValidator, createEnrollmentValidator, subscribeValidator };

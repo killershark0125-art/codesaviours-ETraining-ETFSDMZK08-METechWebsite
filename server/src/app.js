@@ -17,6 +17,7 @@ const adminRoutes = require('./routes/adminRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
 const notFound = require('./middleware/notFound');
 const errorHandler = require('./middleware/errorHandler');
+const subscriberRoutes = require('./routes/subscriberRoutes');
 
 const app = express();
 
@@ -61,6 +62,7 @@ app.use('/api/leads', leadRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/uploads', uploadRoutes);
+app.use('/api/subscribers', subscriberRoutes);
 
 // Keep these after the valid routes.
 app.use(notFound);
