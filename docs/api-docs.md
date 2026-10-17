@@ -199,3 +199,12 @@ These endpoints replace the earlier project rows.
 - The slugs `map` and `admin` are reserved.
 - Projects created before publication status existed count as published.
 - Several projects can share a city, and the map endpoint returns all of them.
+## Newsletter and service details
+
+| Method | Path | Access | Notes |
+| --- | --- | --- | --- |
+| POST | `/api/subscribers` | Public | Body `{ email }`, supported email providers only. 201 `Thanks for subscribing.`, 409 if already subscribed |
+| GET | `/api/subscribers` | Admin | Newest first, paginated, filter `search` (email) |
+| DELETE | `/api/subscribers/:id` | Admin | |
+
+Services have an optional `included` array of strings ("What's included"). Public service responses always return `included` as an array, empty when nothing was added.
